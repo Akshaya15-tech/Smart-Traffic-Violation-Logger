@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Smart Traffic Violation Logger
 
 A Flask web application for traffic police to digitally record, track and
@@ -86,3 +87,7 @@ traffic_logger/
 - If you change the model later, delete `database.db` so it is recreated.
 - For production, run behind a WSGI server (e.g. gunicorn), turn off
   `debug=True`, and set a strong `SECRET_KEY`.
+=======
+# Smart-Traffic-Violation-Logger
+A Flask-based web application for managing and tracking traffic violations with QR code generation, violation history, payment status updates, and SQLite database integration.
+>>>>>>> 80b5825633358205ad13ea04eb7d803e90af087d
