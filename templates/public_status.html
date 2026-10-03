@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Violation Status | Traffic Violation Logger{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container justify-content-center">
+        <span class="navbar-brand mb-0 fw-semibold">
+            <i class="bi bi-camera-video-fill text-warning me-2"></i>Traffic Violation Status
+        </span>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow border-0">
+            <div class="card-body text-center py-4 {{ 'bg-success' if violation.status == 'Paid' else 'bg-danger' }} text-white rounded-top">
+                <i class="bi bi-{{ 'check-circle-fill' if violation.status == 'Paid' else 'exclamation-triangle-fill' }} display-4"></i>
+                <h3 class="mt-2 mb-0">Fine {{ violation.status }}</h3>
+                <div class="small opacity-75">
+                    {{ 'No further payment is required.' if violation.status == 'Paid'
+                       else 'Please pay at the nearest traffic office.' }}
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Vehicle Number</span>
+                    <strong>{{ violation.vehicle_number }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Violation Type</span>
+                    <span>{{ violation.violation_type }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Location</span>
+                    <span class="text-end">{{ violation.location }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Date</span>
+                    <span>{{ violation.violation_date.strftime('%d %B %Y') }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Fine Amount</span>
+                    <strong>&#8377;{{ "{:,.2f}".format(violation.fine_amount) }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Payment Status</span>
+                    <span class="badge {{ 'bg-success' if violation.status == 'Paid' else 'bg-danger' }}">{{ violation.status }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

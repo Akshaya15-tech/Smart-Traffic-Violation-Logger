@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Violation #{{ violation.id }} | Traffic Violation Logger{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h2 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Violation #{{ violation.id }}</h2>
+    <a href="{{ url_for('history') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to History
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <strong>Violation Details</strong>
+                <span class="badge fs-6 {{ 'bg-success' if violation.status == 'Paid' else 'bg-danger' }}">
+                    {{ violation.status }}
+                </span>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Vehicle Number</dt>
+                    <dd class="col-sm-8 fw-semibold">{{ violation.vehicle_number }}</dd>
+
+                    <dt class="col-sm-4">Violation Type</dt>
+                    <dd class="col-sm-8">{{ violation.violation_type }}</dd>
+
+                    <dt class="col-sm-4">Location</dt>
+                    <dd class="col-sm-8">{{ violation.location }}</dd>
+
+                    <dt class="col-sm-4">Date</dt>
+                    <dd class="col-sm-8">{{ violation.violation_date.strftime('%d %B %Y') }}</dd>
+
+                    <dt class="col-sm-4">Fine Amount</dt>
+                    <dd class="col-sm-8">&#8377;{{ "{:,.2f}".format(violation.fine_amount) }}</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">{{ violation.status }}</dd>
+
+                    <dt class="col-sm-4">Recorded On</dt>
+                    <dd class="col-sm-8">{{ violation.created_at.strftime('%d %b %Y, %H:%M') }} UTC</dd>
+                </dl>
+            </div>
+
+            {% if session.get('admin') %}
+            <div class="card-footer bg-white d-flex flex-wrap gap-2">
+                {% if violation.status == 'Unpaid' %}
+                <form method="post" action="{{ url_for('mark_paid', violation_id=violation.id) }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check2-circle me-1"></i>Mark as Paid
+                    </button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('edit_violation', violation_id=violation.id) }}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <form method="post" action="{{ url_for('delete_violation', violation_id=violation.id) }}"
+                      onsubmit="return confirm('Delete this violation record permanently? This cannot be undone.');">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-header bg-white"><strong>QR Code</strong></div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename=violation.qr_code_path) }}" alt="QR Code"
+                     class="img-fluid border rounded p-2 bg-white" style="max-width: 260px;">
+                <p class="small text-muted mt-3 mb-2">Scan to view public payment status</p>
+                <a href="{{ public_link }}" target="_blank" class="small text-break d-block mb-3">{{ public_link }}</a>
+                <a href="{{ url_for('static', filename=violation.qr_code_path) }}"
+                   download="QR_{{ violation.vehicle_number }}_{{ violation.id }}.png"
+                   class="btn btn-sm btn-outline-dark">
+                    <i class="bi bi-download me-1"></i>Download QR
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.stat-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
+}
+
+.table > :not(caption) > * > * {
+    vertical-align: middle;
+}
+
+dt {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.card {
+    border-radius: 0.6rem;
+}

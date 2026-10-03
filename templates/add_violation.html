@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if violation else 'Add' }} Violation | Traffic Violation Logger{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-{{ 'pencil-square' if violation else 'plus-circle' }} me-2"></i>
+                    {{ 'Edit Violation #' ~ violation.id if violation else 'Add Violation Record' }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="vehicle_number" class="form-label">Vehicle Number</label>
+                        <input type="text" class="form-control text-uppercase" id="vehicle_number"
+                               name="vehicle_number" placeholder="e.g. TN33AB1234"
+                               value="{{ form.vehicle_number }}" required maxlength="20">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="violation_type" class="form-label">Violation Type</label>
+                        <select class="form-select" id="violation_type" name="violation_type" required>
+                            <option value="" disabled {{ 'selected' if not form.violation_type }}>Select type</option>
+                            {% for t in violation_types %}
+                            <option value="{{ t }}" {{ 'selected' if form.violation_type == t }}>{{ t }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location"
+                               placeholder="e.g. Perundurai Road Junction"
+                               value="{{ form.location }}" required maxlength="200">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="violation_date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="violation_date" name="violation_date"
+                                   value="{{ form.violation_date or today }}" max="{{ today }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fine_amount" class="form-label">Fine Amount (&#8377;)</label>
+                            <input type="number" class="form-control" id="fine_amount" name="fine_amount"
+                                   min="1" step="0.01" placeholder="e.g. 500"
+                                   value="{{ form.fine_amount }}" required>
+                        </div>
+                    </div>
+
+                    {% if not violation %}
+                    <div class="alert alert-info py-2 small">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Status will be set to <strong>Unpaid</strong> and a unique QR code will be generated automatically.
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>{{ 'Save Changes' if violation else 'Save & Generate QR' }}
+                        </button>
+                        <a href="{{ url_for('details', violation_id=violation.id) if violation else url_for('dashboard') }}"
+                           class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
